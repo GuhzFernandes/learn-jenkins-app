@@ -14,9 +14,10 @@ pipeline {
                 ls -la
                 node --version
                 npm --version
-                npm ci --no-bin-links --cache .npm-cache
-                npm run build
                 '''
+                sh 'rm -rf node_modules .npm-cache'
+                sh 'npm ci'
+                sh 'npm run build'
             }
         }
     }
