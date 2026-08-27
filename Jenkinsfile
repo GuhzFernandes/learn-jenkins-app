@@ -10,12 +10,11 @@ pipeline {
                 }
             }
             steps {
-                sh 'rm -rf node_modules'
                 sh '''
                 ls -la
                 node --version
                 npm --version
-                npm ci
+                npm ci --no-bin-links --cache .npm-cache
                 npm run build
                 '''
             }
