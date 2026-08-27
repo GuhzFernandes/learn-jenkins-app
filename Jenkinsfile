@@ -10,6 +10,7 @@ pipeline {
                 }
             }
             steps {
+                sh 'rm -rf node_modules'
                 sh '''
                 ls -la
                 node --version
