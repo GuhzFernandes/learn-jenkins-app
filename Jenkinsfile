@@ -7,7 +7,7 @@ pipeline {
                 docker{
                     image 'node:lts-alpine'
                     reuseNode true
-                    args '-e NPM_CONFIG_CACHE=${WORKSPACE_TMP}/.npm-cache'
+                    args '-u jenkins:jenkins'
                 }
             }
             steps {
