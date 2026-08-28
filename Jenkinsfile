@@ -7,7 +7,6 @@ pipeline {
                 docker{
                     image 'node:lts-alpine'
                     reuseNode true
-                    args '-u jenkins:jenkins'
                 }
             }
             steps {
