@@ -10,13 +10,22 @@ pipeline {
                 }
             }
             steps {
-                sh '''
-                ls -la
-                node --version
-                npm --version
-                '''
+                sh 'echo "Build stage"'
                 sh 'npm ci'
                 sh 'npm run build'
+            }
+        }
+        stage('test'){
+            agent {
+                docker{
+                    image 'node:lts-alpine'
+                    reuseNode true
+                }
+            }
+            steps{
+                sh 'echo "Test stage"'
+                sh 'test -f buld/index.html'
+                sh 'npm test'
             }
         }
     }
