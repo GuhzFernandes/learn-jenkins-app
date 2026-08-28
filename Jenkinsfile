@@ -15,7 +15,6 @@ pipeline {
                 node --version
                 npm --version
                 '''
-                sh 'rm -rf node_modules .npm-cache'
                 sh 'npm ci'
                 sh 'npm run build'
             }
