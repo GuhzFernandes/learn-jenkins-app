@@ -45,7 +45,7 @@ pipeline {
                     steps {
                         sh '''
                         npm install serve
-                        node_modules/.bin/serve -s build &
+                        npx serve -s build &
                         sleep 10
                         npx playwright test --reporter=html
                         '''
@@ -68,7 +68,7 @@ pipeline {
             steps {
                 sh '''
                 echo "Deploy stage"
-                export HOME=$WORKSPACE
+                #export HOME=$WORKSPACE
 
                 npm install netlify-cli
                 npx netlify --version
