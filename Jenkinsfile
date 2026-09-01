@@ -68,6 +68,8 @@ pipeline {
             steps {
                 sh '''
                 echo "Deploy stage"
+                export HOME=$WORKSPACE
+
                 npm install netlify-cli
                 npx netlify --version
                 '''
