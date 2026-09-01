@@ -56,22 +56,21 @@ pipeline {
                         }
                     }
                 }
-                stage('deploy') {
-                            agent {
-                                docker{
-                                    image 'node:lts-alpine'
-                                    reuseNode true
-                                }
-                            }
-                            steps {
-                                sh '''
-                                echo "Deploy stage"
-                                npm install netlify-cli
-                                node_modules/.bin/netlify --version
-                                '''
-                            }
-                        }
-
+            }
+        }
+        stage('deploy') {
+            agent {
+                docker{
+                    image 'node:lts-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                echo "Deploy stage"
+                npm install netlify-cli
+                node_modules/.bin/netlify --version
+                '''
             }
         }
     }
