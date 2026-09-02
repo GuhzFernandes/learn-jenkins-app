@@ -63,6 +63,7 @@ pipeline {
                 }
             }
         }
+        /*
         stage('deploy-staging') {
             agent {
                 docker{
@@ -108,6 +109,7 @@ pipeline {
                 '''
             }
         }
+        */
         stage('prod-e2e') {
             agent {
                 docker{
