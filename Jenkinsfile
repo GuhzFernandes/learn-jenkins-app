@@ -116,7 +116,7 @@ pipeline {
                 }
             }
             environment{
-                CI_ENVIRONMENT_URL = 'https://starlit-panda-a47b4a.netlify.app'    
+                CI_ENVIRONMENT_URL = 'https://starlit-panda-a47b4a.netlify.app/'    
             }
             steps {
                 sh '''
