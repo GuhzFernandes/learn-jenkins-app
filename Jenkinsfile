@@ -7,7 +7,6 @@ pipeline {
         }
 
     stages {
-        /*
         stage('build') {
             agent {
                 docker{
@@ -21,7 +20,6 @@ pipeline {
                 sh 'npm run build'
             }
         }
-        */
         stage('tests'){
             parallel{
                 stage('junit'){
@@ -65,7 +63,6 @@ pipeline {
                 }
             }
         }
-        /*
         stage('deploy-staging') {
             agent {
                 docker{
@@ -111,7 +108,6 @@ pipeline {
                 '''
             }
         }
-        */
         stage('prod-e2e') {
             agent {
                 docker{
