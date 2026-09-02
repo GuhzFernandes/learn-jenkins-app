@@ -70,7 +70,7 @@ pipeline {
                 echo "Deploy stage"
                 export HOME=$WORKSPACE
 
-                npm install netlify-cli
+                npm install netlify-cli@20.1.1li
                 npx netlify --version
                 '''
             }
