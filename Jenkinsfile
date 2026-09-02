@@ -79,7 +79,7 @@ pipeline {
                 npx netlify --version
                 npx netlify status
 
-                npx netlify deploy --dir=build --prod
+                npx netlify deploy --no-build --dir=build --prod
                 '''
             }
         }
