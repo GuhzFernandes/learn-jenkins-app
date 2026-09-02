@@ -4,7 +4,7 @@ pipeline {
     environment{
         NETLIFY_SITE_ID = '1b63a054-5897-4853-a6f1-1288651ec55d'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-    }
+        }
 
     stages {
         stage('build') {
@@ -80,6 +80,28 @@ pipeline {
 
                 npx netlify deploy --no-build --dir=build --prod
                 '''
+            }
+        }
+
+        stage('prod-e2e') {
+            agent {
+                docker{
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                }
+            }
+            environment{
+                CI_ENVIRONMENT_URL = 'https://starlit-panda-a47b4a.netlify.app'    
+            }
+            steps {
+                sh '''
+                npx playwright test --reporter=html
+                '''
+            }
+            post{
+                always{
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                }
             }
         }
     }
