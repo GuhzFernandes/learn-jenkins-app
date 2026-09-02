@@ -63,7 +63,7 @@ pipeline {
                 }
             }
         }
-        stage('deploy') {
+        stage('deploy-staging') {
             agent {
                 docker{
                     image 'node:lts-alpine'
@@ -72,7 +72,33 @@ pipeline {
             }
             steps {
                 sh '''
-                echo "Deploy stage"
+                echo "Deploy to staging stage"
+                export HOME=$WORKSPACE
+
+                npm install netlify-cli
+                npx netlify status
+
+                npx netlify deploy --no-build --dir=build
+                '''
+            }
+        }
+        stage('approval') {
+            steps {
+                timeout(15) {
+                    input message: 'Do you wish to deploy to production?', ok: ' Yes, I am sure!'
+                }
+            }
+        }
+        stage('deploy-prod') {
+            agent {
+                docker{
+                    image 'node:lts-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                echo "Deploy to prod stage"
                 export HOME=$WORKSPACE
 
                 npm install netlify-cli
@@ -82,7 +108,6 @@ pipeline {
                 '''
             }
         }
-
         stage('prod-e2e') {
             agent {
                 docker{
