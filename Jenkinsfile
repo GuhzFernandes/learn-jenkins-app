@@ -69,6 +69,7 @@ pipeline {
                 sh '''
                 echo "Deploy stage"
                 export HOME=$WORKSPACE
+                export USER=jenkins
 
                 npm install netlify-cli@20.1.1
                 npx netlify --version
