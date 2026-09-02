@@ -76,7 +76,6 @@ pipeline {
                 export HOME=$WORKSPACE
 
                 npm install netlify-cli
-                npx netlify --version
                 npx netlify status
 
                 npx netlify deploy --no-build --dir=build --prod
