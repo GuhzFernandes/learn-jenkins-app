@@ -4,6 +4,7 @@ pipeline {
     environment{
         NETLIFY_SITE_ID = '1b63a054-5897-4853-a6f1-1288651ec55d'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+
         }
 
     stages {
@@ -63,30 +64,7 @@ pipeline {
                 }
             }
         }
-        stage('deploy-staging') {
-            agent {
-                docker{
-                    image 'node:lts-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                echo "Deploy to staging stage"
-                export HOME=$WORKSPACE
-
-                npm install netlify-cli node-jq
-                npx netlify status
-
-                mkdir -p deploy-output
-                npx netlify deploy --no-build --dir=build --json > deploy-output/staging.json
-                '''
-                script{
-                    env.STAGING_URL = sh(script: "npx node-jq -r '.deploy_url' deploy-output/staging.json", returnStdout: true)
-                }
-            }
-        }
-        stage('staging-e2e') {
+        stage('deploy staging') {
             agent {
                 docker{
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
