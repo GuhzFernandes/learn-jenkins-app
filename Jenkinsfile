@@ -78,8 +78,12 @@ pipeline {
                 npm install netlify-cli node-jq
                 npx netlify status
 
-                npx netlify deploy --no-build --dir=build
+                mkdir -p deploy-output
+                npx netlify deploy --no-build --dir=build --json > deploy-output/staging.json
                 '''
+                script{
+                    env.STAGING_URL = sh(script: "npx node-jq -r '.deploy_url' deploy-output/staging.json", returnStdot: true)
+                }
             }
         }
         stage('approval') {
@@ -105,11 +109,8 @@ pipeline {
                 npx netlify status
 
                 mkdir -p deploy-output
-                npx netlify deploy --no-build --dir=build --prod --json > deploy-output/staging.json
+                npx netlify deploy --no-build --dir=build --prod --json > deploy-output/prod.json
                 '''
-                script{
-                    env.STAGING_URL = sh(script: "npx node-jq -r '.deploy_url' deploy-output/staging.json", returnStdot: true)
-                }
             }
         }
         stage('prod-e2e') {
