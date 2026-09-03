@@ -75,7 +75,7 @@ pipeline {
                 echo "Deploy to staging stage"
                 export HOME=$WORKSPACE
 
-                npm install netlify-cli
+                npm install netlify-cli node-jq
                 npx netlify status
 
                 npx netlify deploy --no-build --dir=build
@@ -101,11 +101,15 @@ pipeline {
                 echo "Deploy to prod stage"
                 export HOME=$WORKSPACE
 
-                npm install netlify-cli
+                npm install netlify-cli node-jq
                 npx netlify status
 
-                npx netlify deploy --no-build --dir=build --prod
+                mkdir -p deploy-output
+                npx netlify deploy --no-build --dir=build --prod --json > deploy-output/staging.json
                 '''
+                script{
+                    env.STAGING_URL = sh(script: "npx node-jq -r '.deploy_url' deploy-output/staging.json", returnStdot: true)
+                }
             }
         }
         stage('prod-e2e') {
