@@ -57,7 +57,7 @@ pipeline {
                     }
                     post{
                         always{
-                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'local e2e playwright report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }
                 }
@@ -86,6 +86,29 @@ pipeline {
                 }
             }
         }
+        stage('staging-e2e') {
+            agent {
+                docker{
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                }
+            }
+            environment{
+                CI_ENVIRONMENT_URL = "${env.STAGING_URL}"    
+            }
+            steps {
+                sh '''
+                npx playwright test --reporter=html
+                '''
+            }
+            post{
+                always{
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'staging e2e playwright report', reportTitles: '', useWrapperFileDirectly: true])
+                }
+            }
+        }
+
+        
         stage('approval') {
             steps {
                 timeout(15) {
@@ -130,7 +153,7 @@ pipeline {
             }
             post{
                 always{
-                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'prod e2e playwright report', reportTitles: '', useWrapperFileDirectly: true])
                 }
             }
         }
