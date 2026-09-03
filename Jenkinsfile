@@ -94,10 +94,22 @@ pipeline {
                 }
             }
             environment{
-                CI_ENVIRONMENT_URL = "${env.STAGING_URL}"    
+                CI_ENVIRONMENT_URL = "TO BE DEFINE"    
             }
             steps {
                 sh '''
+                echo "Deploy to staging"
+                export HOME=$WORKSPACE
+
+                npm install netlify-cli node-jq
+                npx netlify status
+
+                mkdir -p deploy-output
+                npx netlify deploy --no-build --dir=build --json > deploy-output/staging.json
+                CI_ENVIRONMENT_URL=$(npx node-jq -r '.deploy_url' deploy-output/staging.json", returnStdout: true)
+                '''
+                sh '''
+                echo "Test staging deploy"
                 npx playwright test --reporter=html
                 '''
             }
@@ -119,26 +131,6 @@ pipeline {
         stage('deploy-prod') {
             agent {
                 docker{
-                    image 'node:lts-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                echo "Deploy to prod stage"
-                export HOME=$WORKSPACE
-
-                npm install netlify-cli node-jq
-                npx netlify status
-
-                mkdir -p deploy-output
-                npx netlify deploy --no-build --dir=build --prod --json > deploy-output/prod.json
-                '''
-            }
-        }
-        stage('prod-e2e') {
-            agent {
-                docker{
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
                     reuseNode true
                 }
@@ -148,6 +140,17 @@ pipeline {
             }
             steps {
                 sh '''
+                echo "Deploy to prod"
+                export HOME=$WORKSPACE
+
+                npm install netlify-cli
+                npx netlify status
+
+                mkdir -p deploy-output
+                npx netlify deploy --no-build --dir=build --prod --json > deploy-output/prod.json
+                '''
+                sh '''
+                echo "Test prod deploy"
                 npx playwright test --reporter=html
                 '''
             }
