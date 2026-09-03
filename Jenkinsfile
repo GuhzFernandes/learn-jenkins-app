@@ -82,7 +82,7 @@ pipeline {
                 npx netlify deploy --no-build --dir=build --json > deploy-output/staging.json
                 '''
                 script{
-                    env.STAGING_URL = sh(script: "npx node-jq -r '.deploy_url' deploy-output/staging.json", returnStdot: true)
+                    env.STAGING_URL = sh(script: "npx node-jq -r '.deploy_url' deploy-output/staging.json", returnStdout: true)
                 }
             }
         }
