@@ -85,8 +85,7 @@ pipeline {
                 mkdir -p deploy-output
                 npx netlify deploy --no-build --dir=build --json > deploy-output/staging.json
                 CI_ENVIRONMENT_URL=$(npx node-jq -r '.deploy_url' deploy-output/staging.json)
-                '''
-                sh '''
+
                 echo "Test staging deploy"
                 npx playwright test --reporter=html
                 '''
@@ -126,8 +125,7 @@ pipeline {
 
                 mkdir -p deploy-output
                 npx netlify deploy --no-build --dir=build --prod --json > deploy-output/prod.json
-                '''
-                sh '''
+                
                 echo "Test prod deploy"
                 npx playwright test --reporter=html
                 '''
