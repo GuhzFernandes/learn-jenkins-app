@@ -21,6 +21,7 @@ pipeline {
                 sh 'npm run build'
             }
         }
+
         stage('tests'){
             parallel{
                 stage('junit'){
@@ -41,6 +42,7 @@ pipeline {
                         }
                     }
                 }
+
                 stage('e2e') {
                     agent {
                         docker{
@@ -64,6 +66,7 @@ pipeline {
                 }
             }
         }
+
         stage('deploy staging') {
             agent {
                 docker{
@@ -105,6 +108,7 @@ pipeline {
                 }
             }
         }
+        
         stage('deploy-prod') {
             agent {
                 docker{
