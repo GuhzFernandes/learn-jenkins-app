@@ -8,12 +8,6 @@ pipeline {
         }
 
     stages {
-        stage('docker'){
-            steps{
-                sh 'docker build -t my-playwright .'
-            }
-        }
-        
         stage('approval to build') {
             steps {
                 timeout(15) {
