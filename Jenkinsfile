@@ -14,7 +14,7 @@ pipeline {
             }
         }
         
-        stage('approval') {
+        stage('approval to build') {
             steps {
                 timeout(15) {
                     input message: 'Do you wish to procede to build?', ok: ' Yes, I am sure!'
@@ -81,7 +81,7 @@ pipeline {
             }
         }
 
-        stage('approval') {
+        stage('approval to staging deploy') {
             steps {
                 timeout(15) {
                     input message: 'Do you wish to procede to deploy to staging?', ok: ' Yes, I am sure!'
