@@ -11,7 +11,14 @@ pipeline {
         stage('docker'){
             sh 'docker build -t my-playwright .'
         }
-
+        
+        stage('approval') {
+            steps {
+                timeout(15) {
+                    input message: 'Do you wish to procede to build?', ok: ' Yes, I am sure!'
+                }
+            }
+        }
 
         stage('build') {
             agent {
@@ -68,6 +75,14 @@ pipeline {
                             publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'local e2e playwright report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }
+                }
+            }
+        }
+
+        stage('approval') {
+            steps {
+                timeout(15) {
+                    input message: 'Do you wish to procede to deploy to staging?', ok: ' Yes, I am sure!'
                 }
             }
         }
