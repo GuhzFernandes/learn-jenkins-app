@@ -92,7 +92,7 @@ pipeline {
         stage('deploy staging') {
             agent {
                 docker{
-                    image 'mcr.microsoft.com/playwright:v1.62.0-noble'
+                    image 'my-playwright'
                     reuseNode true
                 }
             }
@@ -104,12 +104,11 @@ pipeline {
                 echo "Deploy to staging"
                 export HOME=$WORKSPACE
 
-                npm install netlify-cli node-jq
-                npx netlify status
+                netlify status
 
                 mkdir -p deploy-output
-                npx netlify deploy --no-build --dir=build --json > deploy-output/staging.json
-                CI_ENVIRONMENT_URL=$(npx node-jq -r '.deploy_url' deploy-output/staging.json)
+                netlify deploy --no-build --dir=build --json > deploy-output/staging.json
+                CI_ENVIRONMENT_URL=$(node-jq -r '.deploy_url' deploy-output/staging.json)
 
                 echo "Test staging deploy"
                 npx playwright test --reporter=html
