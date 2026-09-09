@@ -77,7 +77,7 @@ pipeline {
         stage('approval to AWS deploy') {
             steps {
                 timeout(15) {
-                    input message: 'Do you wish to procede to deploy to staging?', ok: ' Yes, I am sure!'
+                    input message: 'Do you wish to procede to deploy to AWS?', ok: ' Yes, I am sure!'
                 }
             }
         }
