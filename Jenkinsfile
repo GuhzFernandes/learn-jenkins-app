@@ -8,28 +8,6 @@ pipeline {
         }
 
     stages {
-        stage('AWS'){
-            agent{
-                docker{
-                    image 'amazon/aws-cli'
-                    args "--entrypoint=''"
-                }
-            }
-            environment{
-                AWS_S3_BUCKET = 's3://learn-jenkins-20260907'
-            }
-            steps{
-                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                    sh '''
-                    aws --version
-                    echo "Hello S3!" > index.html
-                    aws s3 cp index.html $AWS_S3_BUCKET/index.html
-                    '''
-                }
-            }
-        }
-
-
         stage('approval to build') {
             steps {
                 timeout(15) {
@@ -92,6 +70,35 @@ pipeline {
                             publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'local e2e playwright report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }
+                }
+            }
+        }
+
+        stage('approval to AWS deploy') {
+            steps {
+                timeout(15) {
+                    input message: 'Do you wish to procede to deploy to staging?', ok: ' Yes, I am sure!'
+                }
+            }
+        }
+
+        stage('AWS'){
+            agent{
+                docker{
+                    image 'amazon/aws-cli'
+                    args "--entrypoint=''"
+                }
+            }
+            environment{
+                AWS_S3_BUCKET = 's3://learn-jenkins-20260907'
+            }
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                    aws --version
+                    echo "Hello S3!" > index.html
+                    aws s3 sync build $AWS_S3_BUCKET
+                    '''
                 }
             }
         }
